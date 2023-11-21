@@ -12,7 +12,9 @@ public class Util {
     private static final String PASSWORD = "root123";
 
     public static Connection getMySQLConnection() {
+
         Connection connection;
+
         try {
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, LOGIN, PASSWORD);
