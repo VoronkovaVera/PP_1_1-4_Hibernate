@@ -10,7 +10,7 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
 
-    Connection connection = Util.getMySQLConnection();
+    private final Connection connection = Util.getMySQLConnection();
 
     public UserDaoJDBCImpl() {
 
