@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
@@ -41,47 +42,59 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            try {
-                session.persist(new User(name, lastName, age));
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-            }
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            session.persist(new User(name, lastName, age));
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public void removeUserById(long id) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            try {
-                session.remove(session.find(User.class, id));
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-            }
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            session.remove(session.find(User.class, id));
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public List<User> getAllUsers() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM User", User.class).list();
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        List<User> resQuery = new ArrayList<>();
+        try {
+            resQuery = session.createQuery("FROM User", User.class).list();
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            session.close();
         }
+        return resQuery;
     }
 
     @Override
     public void cleanUsersTable() {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            try {
-                session.createQuery("DELETE User").executeUpdate();
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-            }
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            session.createQuery("DELETE User").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        } finally {
+            session.close();
         }
     }
 }
