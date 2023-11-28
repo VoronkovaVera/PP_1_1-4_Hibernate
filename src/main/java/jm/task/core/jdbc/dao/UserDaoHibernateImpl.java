@@ -48,7 +48,9 @@ public class UserDaoHibernateImpl implements UserDao {
             session.persist(new User(name, lastName, age));
             transaction.commit();
         } catch (Exception e) {
-            transaction.rollback();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         } finally {
             session.close();
         }
@@ -62,7 +64,9 @@ public class UserDaoHibernateImpl implements UserDao {
             session.remove(session.find(User.class, id));
             transaction.commit();
         } catch (Exception e) {
-            transaction.rollback();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         } finally {
             session.close();
         }
@@ -77,7 +81,9 @@ public class UserDaoHibernateImpl implements UserDao {
             resQuery = session.createQuery("FROM User", User.class).list();
             transaction.commit();
         } catch (Exception e) {
-            transaction.rollback();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         } finally {
             session.close();
         }
@@ -92,7 +98,9 @@ public class UserDaoHibernateImpl implements UserDao {
             session.createQuery("DELETE User").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
-            transaction.rollback();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         } finally {
             session.close();
         }
